@@ -107,7 +107,7 @@ Why This is Better
 By combining Docker (The Shield) with Bandit (The Inspector), you have created a professional-grade defense system that is one step ahead of standard development environments
 
 Conclusion
-
+---------
 SafeBox provides a comprehensive solution for developers to experiment with new technologies and unverified third-party libraries without compromising
 personal or system security. By transforming the development environment into a disposable, secure, and persistent asset, 
 it enables developers to "Code Fearlessly, Code Safely."
