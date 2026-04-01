@@ -1,13 +1,13 @@
 # SafeBox
 SafeBox: Technical Briefing on Secure and Isolated Python Development
-
+========================================================================
 SafeBox is a specialized security framework designed to facilitate the integration and testing of third-party Python libraries within a protected,
 Docker-powered sandbox. Described as a "Bomb Disposal Suit" for code, the system aims to create an environment where any programming library can be downloaded, 
 analyzed, and executed without risking the integrity of the host system or the security of personal data.
 
 
 The Necessity of Isolated Environments: Addressing Supply Chain Attacks
-
+-----------------------------------------------------------------------
 The development of SafeBox is a response to several critical vulnerabilities inherent in standard local development environments. These risks,
 often categorized as supply chain attacks, include:
 Typosquatting:  The risk of accidentally downloading malicious packages with names nearly identical to legitimate libraries
@@ -18,7 +18,7 @@ Data Exfiltration:  Malicious scripts that silently transfer local files from th
 
 
 Architectural Philosophy and Technical Pillars
-
+--------------------------------------------
 SafeBox operates on a multi-layered security model built upon three core philosophies:
 Never Trust:  Every piece of code is scanned before it is allowed to interact with the CPU.
 Always Isolate:  All execution occurs within a "Virtual Jail" provided by Docker.
@@ -26,7 +26,7 @@ Monitor Everything:  All network activity is logged to detect and audit potentia
 
 
 Technical Components
-
+--------------------
 The system is constructed on three primary technical pillars:
 Dockerfile:  This component defines a hardened Linux environment utilizing a non-root user to minimize potential privilege escalation.
 Docker Compose:  This tool manages network isolation and ensures persistent storage for development data.
@@ -35,7 +35,7 @@ coordinating the analysis and execution phases.
 
 
 The SafeBox Workflow: Two-Step Verification
-
+-------------------------------------------
 To ensure maximum security, SafeBox employs a rigorous two-phase verification process for all libraries.
 
 Phase 1: Static Analysis (Pre-Install)
@@ -45,14 +45,14 @@ Usage of eval() or exec().
 
 
 Presence of hardcoded IP addresses.
-
+----------------------------------
 Phase 2: Dynamic Execution (Runtime)
 Upon successful completion of the static scan, a fresh Docker container is launched. The library is then installed and executed within this restricted, 
 ephemeral environment.
 
 
 Key Security Features and Technical Implementation
-
+-------------------------------------------------
 SafeBox integrates specific technical measures to balance security with developer productivity.
 | Feature | Technical Implementation | Benefit |
 | ------  | ------------------------ | ------- |
@@ -63,7 +63,7 @@ SafeBox integrates specific technical measures to balance security with develope
 
 
 Security Efficacy Comparison
-
+----------------------------
 The following table highlights the security advantages of the SafeBox sandbox compared to standard local Python installations:
 | Security Threat | Standard Local Python | SafeBox Sandbox |
 | --------------- | --------------------- | --------------- |
@@ -73,6 +73,7 @@ The following table highlights the security advantages of the SafeBox sandbox co
 | Background Malware | Persists on the host PC | Deleted upon session exit |
 
 Deployment and Operational Protocol
+------------------------------------
 Deployment of the SafeBox environment requires  Docker Desktop  as a prerequisite. The operational workflow is as follows:
 
 1.Initialization:  Consolidate the Dockerfile, docker-compose.yml, and safe_run.py files into a single directory.
@@ -84,12 +85,14 @@ while installed libraries are managed within the persistent env_data/ volume.
 
 
 The "Smart Pip" Strategy
+------------------------
 While the original features focus on Containment (keeping a threat inside the box), your added "Pre-scan" focuses on Prevention (stopping the threat from entering).
 
 Interception: When you type pip install, our custom script "catches" the command first.
 
 
 Static Analysis: It downloads only the source code to a temporary folder and uses Bandit to "read" the code for hidden backdoors, hardcoded IPs, or dangerous functions.
+
 
 Gatekeeping: If Bandit finds a risk, it pauses the installation and alerts you. If it's clean, it proceeds to install.
 
