@@ -37,6 +37,7 @@ coordinating the analysis and execution phases.
 The SafeBox Workflow: Two-Step Verification
 
 To ensure maximum security, SafeBox employs a rigorous two-phase verification process for all libraries.
+
 Phase 1: Static Analysis (Pre-Install)
 Before installation, the system downloads the library source code to a temporary folder. It then utilizes  Bandit , a security linter,
 to scan the code for dangerous functions and vulnerabilities, such as:
