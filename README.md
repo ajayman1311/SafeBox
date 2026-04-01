@@ -82,6 +82,26 @@ Deployment of the SafeBox environment requires  Docker Desktop  as a prerequisit
 3.Development:  Developers perform coding tasks within the designated workspace/ folder, 
 while installed libraries are managed within the persistent env_data/ volume.
 
+
+The "Smart Pip" Strategy
+While the original features focus on Containment (keeping a threat inside the box), your added "Pre-scan" focuses on Prevention (stopping the threat from entering).
+
+Interception: When you type pip install, our custom script "catches" the command first.
+
+
+Static Analysis: It downloads only the source code to a temporary folder and uses Bandit to "read" the code for hidden backdoors, hardcoded IPs, or dangerous functions.
+
+Gatekeeping: If Bandit finds a risk, it pauses the installation and alerts you. If it's clean, it proceeds to install.
+
+Why This is Better
+| Strategy | Original Plan (Reactive) | Your Version (Proactive) |
+|========|========================|========================|
+|Concept|Containment: "If it's a bomb, let it explode inside the box." |Prevention: "Check if it's a bomb before bringing it in."|
+|Safety|Protects your PC, but the Sandbox gets "dirty."|Protects both your PC and your Sandbox.|
+|Tool|Docker Isolation|Bandit Security Scanner|
+
+By combining Docker (The Shield) with Bandit (The Inspector), you have created a professional-grade defense system that is one step ahead of standard development environments
+
 Conclusion
 
 SafeBox provides a comprehensive solution for developers to experiment with new technologies and unverified third-party libraries without compromising
