@@ -1,0 +1,17 @@
+# File: docker-compose.yml
+version: '3.11.7'
+
+services:
+  python-sandbox:
+    build: .
+    container_name: safe_python_env
+    volumes:
+      # Mapping: Local Machine Path : Container Internal Path
+      - ./workspace:/home/developer/workspace
+      - ./logs:/home/developer/logs
+      - ./env_data:/home/developer/env_storage
+    cap_add:
+      - NET_ADMIN  # Necessary for network monitoring and traffic analysis
+    network_mode: "bridge"
+    stdin_open: true  # Allows for interactive terminal input
+    tty: true        # Enables a simulated terminal interface
