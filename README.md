@@ -94,8 +94,9 @@ Static Analysis: It downloads only the source code to a temporary folder and use
 Gatekeeping: If Bandit finds a risk, it pauses the installation and alerts you. If it's clean, it proceeds to install.
 
 Why This is Better
+
 | Strategy | Original Plan (Reactive) | Your Version (Proactive) |
-|========|========================|========================|
+|-----------|-------------------------|--------------------------|
 |Concept|Containment: "If it's a bomb, let it explode inside the box." |Prevention: "Check if it's a bomb before bringing it in."|
 |Safety|Protects your PC, but the Sandbox gets "dirty."|Protects both your PC and your Sandbox.|
 |Tool|Docker Isolation|Bandit Security Scanner|
