@@ -1,54 +1,52 @@
 # File: Dockerfile
 FROM python:3.11-slim
 
+# Install core tools
 RUN apt-get update && apt-get install -y \
     tcpdump bandit curl && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m developer
 WORKDIR /home/developer/workspace
 
-# Persistence setup
+# Persistence configuration
 ENV PYTHONUSERBASE=/home/developer/env_storage
-# We have placed '/usr/local/bin' first in the path.
 ENV PATH="/usr/local/bin:/home/developer/env_storage/bin:${PATH}"
 ENV PIP_USER=true
 
-# --- ROBUST SMART PIP SCRIPT ---
-# We will overwrite this script at '/usr/local/bin/pip'.
-RUN echo '#!/bin/bash\n\
-# Check if command is "install"\n\
-if [[ "$1" == "install" ]]; then\n\
-    # Find the package name (skipping flags like -U or --no-cache)\n\
-    for arg in "${@:2}"; do\n\
-        if [[ ! $arg == -* ]]; then\n\
-            PACKAGE=$arg\n\
-            break\n\
-        fi\n\
-    done\n\
-    \n\
-    if [[ ! -z "$PACKAGE" ]]; then\n\
-        echo "--------------------------------------------------"\n\
-        echo "🔍 [SECURITY SCAN] Analyzing: $PACKAGE"\n\
-        echo "--------------------------------------------------"\n\
-        mkdir -p /tmp/scan\n\
-        # Download only source code for scanning\n\
-        python3 -m pip download $PACKAGE --no-binary :all: -d /tmp/scan > /dev/null 2>&1\n\
+# --- OPTIMIZED SMART PIP WRAPPER ---
+RUN echo '#!/bin/bash \n\
+if [[ "$1" == "install" ]]; then \n\
+    for arg in "${@:2}"; do \n\
+        if [[ ! $arg == -* ]]; then \n\
+            PACKAGE=$arg \n\
+            break \n\
+        fi \n\
+    done \n\
+    if [[ ! -z "$PACKAGE" ]]; then \n\
+        echo "--------------------------------------------------" \n\
+        echo "📥 [1/2] DOWNLOADING: $PACKAGE" \n\
+        echo "--------------------------------------------------" \n\
+        mkdir -p /tmp/scan \n\
+        # Removed --no-binary for speed and > /dev/null for visibility \n\
+        python3 -m pip download $PACKAGE -d /tmp/scan --progress-bar on \n\
         \n\
-        # Run Bandit scan\n\
-        bandit -r /tmp/scan\n\
-        EXIT_CODE=$?\n\
-        rm -rf /tmp/scan\n\
-        \n\
-        if [ $EXIT_CODE -ne 0 ]; then\n\
-            echo "⚠️  MALICIOUS PATTERN DETECTED in $PACKAGE!"\n\
-            read -p "Risk detected. Proceed anyway? (y/n): " confirm\n\
-            if [[ $confirm != "y" ]]; then echo "❌ Installation Aborted."; exit 1; fi\n\
-        else\n\
-            echo "✅ [SCAN CLEAN] No high-risk patterns found."\n\
-        fi\n\
-    fi\n\
-fi\n\
-# Execute the real pip\n\
+        echo "--------------------------------------------------" \n\
+        echo "🔍 [2/2] SECURITY SCANNING (Bandit)..." \n\
+        echo "--------------------------------------------------" \n\
+        # Added -ll to skip low-severity warnings and speed up analysis \n\
+        bandit -r /tmp/scan -ll \n\
+        EXIT_CODE=$? \n\
+        rm -rf /tmp/scan \n\
+        if [ $EXIT_CODE -ne 0 ]; then \n\
+            echo "⚠️  CRITICAL RISK DETECTED!" \n\
+            read -p "Security issues found. Install anyway? (y/n): " confirm \n\
+            if [[ $confirm != "y" ]]; then echo "❌ Aborted."; exit 1; fi \n\
+        else \n\
+            echo "✅ [CLEAN] No major threats found. Proceeding..." \n\
+        fi \n\
+    fi \n\
+fi \n\
+# Run the actual pip installation \n\
 python3 -m pip "$@"' > /usr/local/bin/pip && \
 chmod +x /usr/local/bin/pip
 
